@@ -1,4 +1,4 @@
-import { log } from './log.ts';
+import { log } from "./log.ts";
 
 {
   /** Currying 이란..? */
@@ -24,11 +24,39 @@ import { log } from './log.ts';
 }
 
 {
+  // 커링하기전에 유틸타입들 살펴보기
+  type AnyFn = (...params: any) => any;
+
+  type Parameters<T extends AnyFn> = T extends (...params: infer P) => any
+    ? P
+    : never;
+
+  // type A0 = Parameters<(a: string, b: number) => boolean> // [a: string, b: number]
+
+  type ReturnType<T extends AnyFn> = T extends (...params: any[]) => infer R
+    ? R
+    : never;
+
+  // type A1 = ReturnType<() => 'returnType'>
+
+  type Head<T extends any[]> = T extends [infer First, ...any[]]
+    ? First
+    : never;
+
+  // type A2 = Head<[1, 2, 3, 4, 5]> // 1
+
+  type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never;
+  // type A3 = Tail<[1, 2, 3, 4, 5]> // [2, 3, 4, 5]
+
+  type Length<T extends any[]> = T["length"];
+  // type A4 = Length<[1, 2, 3, 4, 5]> // 5
+}
+
+{
   /**
    * Level.1 Curring
    * 인자가 2개인 케이스
    */
-
   const add = (a: number, b: number) => a + b;
 
   try {
@@ -54,6 +82,8 @@ import { log } from './log.ts';
 
   type AnyFn = (...params: any[]) => any;
   type HasTail<T extends any[]> = T extends [] | [any] ? false : true;
+
+  // type _A = Curried<[a: number, b: 'knowre'], 'curry'>;
 
   try {
     function curry<T extends AnyFn>(fn: T): Curry<T>;
@@ -100,12 +130,12 @@ import { log } from './log.ts';
     /**
      * (c: boolean) => boolean
      */
-    const a = curriedFoo(3, 'knowre');
+    const a = curriedFoo(3, "knowre");
 
     /**
      * true
      */
-    const b = curriedFoo(3, 'knowre', false); // true
+    const b = curriedFoo(3, "knowre", false); // true
 
     /**
      *  ((b: string) => (c: boolean) => boolean) &
@@ -118,7 +148,7 @@ import { log } from './log.ts';
     type Curried<
       P extends any[],
       R,
-      PrevParams extends any[] = [] // 모든 params를 저장하기위해서 앞전에 커링된 인자를 보관하기 위한 값
+      PrevParams extends any[] = [], // 모든 params를 저장하기위해서 앞전에 커링된 인자를 보관하기 위한 값
     > = P extends [infer Head, ...infer Tail]
       ? HasTail<P> extends true
         ? ((...params: [...PrevParams, Head]) => Curried<Tail, R>) & // 커링된 함수를 리턴.
@@ -131,7 +161,7 @@ import { log } from './log.ts';
     type TestA = Curried<[1, 2], true>;
     type TestB = Curried<[2], true, [1]>;
 
-		// ---
+    // ---
     function curry<T extends AnyFn>(fn: T): Curry<T>;
     function curry(fn) {
       return function curried(...params) {
@@ -161,14 +191,14 @@ import { log } from './log.ts';
     /**
      * (c: boolean) => boolean
      */
-    const a = curriedFoo(3, 'knowre');
-		log(a)
+    const a = curriedFoo(3, "knowre");
+    log(a);
 
     /**
      * true
      */
-    const b = curriedFoo(3, 'knowre', false); // true
-		log(b)
+    const b = curriedFoo(3, "knowre", false); // true
+    log(b);
 
     /**
      *  ((b: string) => (c: boolean) => boolean) &
@@ -176,9 +206,9 @@ import { log } from './log.ts';
      */
     const c = curriedFoo(3);
 
-		log(c)
-		log(c('knowre')(false))
-		// log(c('knowre')('type error!'))
-		// curriedFoo('type error!')
+    log(c);
+    log(c("knowre")(false));
+    // log(c("knowre")("type error!"));
+    // curriedFoo('type error!')
   }
 }
