@@ -52,6 +52,7 @@ import { log } from "./log.ts";
   // type A4 = Length<[1, 2, 3, 4, 5]> // 5
 }
 
+// 본격적으로 커링 타입 프로그래밍 하기
 {
   /**
    * Level.1 Curring
@@ -76,7 +77,8 @@ import { log } from "./log.ts";
 
   type Curried<P extends any[], R> = P extends [infer Head, ...infer Rest]
     ? HasTail<P> extends true
-      ? ((a: Head, ...b: Rest) => R) & ((a: Head) => Curried<Rest, R>)
+      ? ((a: Head) => Curried<Rest, R>) & // 커링된 함수
+        ((a: Head, ...b: Rest) => R) // 커링없이 모든인자 받아서 실행
       : (a: Head) => R // head 하나만 넘어옴
     : never;
 
@@ -207,7 +209,7 @@ import { log } from "./log.ts";
     const c = curriedFoo(3);
 
     log(c);
-    log(c("knowre")(false));
+    log(c("knowre")(false)); // true
     // log(c("knowre")("type error!"));
     // curriedFoo('type error!')
   }

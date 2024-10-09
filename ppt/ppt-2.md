@@ -58,10 +58,6 @@ interface TS extends JS {
 
 ---
 
-# 타입 레벨 프로그래밍
-
----
-
 # 제네릭 (Generics)
 - 제네릭은 선언 시점이 아니라 생성 시점에 타입을 명시하여 하나의 타입만이 아닌 다양한 타입을 사용할 수 있도록 하는 기법
 
@@ -87,7 +83,10 @@ type Foo<
 
 # 조건문
 
-`extends` 의 역할은 두가지가 있는데 그중하나가 if의 역할이다.
+`extends` 의 역할은 3가지
+  - `조건문 역할 (if)`
+  - 타입 제한 (최소 만족 조건)
+  - 타입 확장
 
 ```ts
 type User {
@@ -108,7 +107,7 @@ type UseHasEmailField = HasEmailField<User> // true
 
 # 반복문
 - 반복문은 존재하지않지만 타입 재귀는 가능하다!
-- 여기서 중요한 키워드는 `infer`
+- 여기서 중요한 키워드는 `infer` (타입 변수 할당)
 
 ```ts
 type IsAllNumber<T extends unknown[]> = T extends [infer First, ...infer Rest]

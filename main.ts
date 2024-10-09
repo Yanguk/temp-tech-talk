@@ -1,4 +1,4 @@
-import * as _ from './_'
+import * as _ from './_';
 
 // 조건문
 {
@@ -24,6 +24,9 @@ import * as _ from './_'
 
   type A = IsAllNumber<[1, 2, 3]>; // true
   type B = IsAllNumber<[1, 2, 'knowre']>; // false
+  type C = IsAllNumber<[0]>; // true
+  type D = IsAllNumber<[]>; // true
+  type E = IsAllNumber<['false']>; // false
 }
 
 // 유틸타입
